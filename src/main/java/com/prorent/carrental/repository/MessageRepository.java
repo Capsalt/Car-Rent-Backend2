@@ -8,4 +8,5 @@ import com.prorent.carrental.domain.Message;
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
 
+	
 }
