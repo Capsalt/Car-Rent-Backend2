@@ -64,6 +64,8 @@ public class Message implements Serializable {
             message = "Please provide valid phone number")
 	@Column(length=14,nullable=false)
 	private String phoneNumber;
+
+
 	
 	
 
