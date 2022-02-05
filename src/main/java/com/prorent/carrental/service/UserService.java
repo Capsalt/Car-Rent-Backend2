@@ -1,6 +1,7 @@
 package com.prorent.carrental.service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,10 @@ public class UserService {
 		user.setRoles(roles);
 		userRepository.save(user);
 		
+	}
+	
+	public List<User> fetchAllUsers(){
+		return userRepository.findAll();
 	}
 
 }

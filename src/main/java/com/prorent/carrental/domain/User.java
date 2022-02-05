@@ -19,6 +19,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import com.prorent.carrental.domain.enumeration.UserRole;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -89,5 +91,23 @@ public class User {
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "tbl_user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
+	
+	public Set<Role> getRole(){
+		return roles;
+	}
+	
+	public Set<String> getRoles(){
+		Set<String> roleStr = new HashSet<>();
+		Role[] role = roles.toArray(new Role[roles.size()]);
+		
+		for (int i = 0; i < roles.size(); i++) {
+			if(role[i].getName().equals(UserRole.ROLE_ADMIN))
+				roleStr.add("Administrator");
+			else
+				roleStr.add("Customer");
+		}
+		return roleStr;
+	}
+	
 
 }
