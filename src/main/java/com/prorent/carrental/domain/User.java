@@ -30,7 +30,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "tbl_user")
+@Table(name="tbl_user")
 @Entity
 public class User {
 
@@ -107,6 +107,32 @@ public class User {
 				roleStr.add("Customer");
 		}
 		return roleStr;
+	}
+
+	public User(String firstName, String lastName, String password, 
+			String phoneNumber, String email, String address,
+			String zipCode) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.password = password;
+		this.phoneNumber = phoneNumber;
+		this.email = email;
+		this.address = address;
+		this.zipCode = zipCode;
+	}
+
+	public User(String firstName, String lastName, String password, 
+			String phoneNumber, String email, String address,
+			String zipCode, Set<Role> roles, Boolean builtIn) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.password = password;
+		this.phoneNumber = phoneNumber;
+		this.email = email;
+		this.address = address;
+		this.zipCode = zipCode;
+		this.roles = roles;
+		this.builtIn = builtIn;
 	}
 	
 
