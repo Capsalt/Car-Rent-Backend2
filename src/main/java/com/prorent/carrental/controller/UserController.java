@@ -13,12 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.prorent.carrental.domain.User;
@@ -90,6 +93,50 @@ public class UserController {
 		map.put("User updated successfully", true);
 		return new ResponseEntity<>(map,HttpStatus.OK);
 	}
+	
+	
+	
+	@PatchMapping("/auth")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('CUSTOMER')")
+	public ResponseEntity<Map<String, Boolean>> updatePassword(HttpServletRequest request,
+			@RequestBody Map<String,String> userMap){
+		Long id=(Long)request.getAttribute("id");
+		String newPassword = userMap.get("newPassword");
+		String oldPassword = userMap.get("oldPassword");
+		userService.updatePassword(id,newPassword,oldPassword);
+		Map<String, Boolean> map = new HashMap<>();
+		map.put("Password changed successfully", true);
+		return new ResponseEntity<>(map,HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/{id}/auth")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<Map<String, Boolean>>deleteUser(@PathVariable Long id){
+		userService.removeById(id);
+		
+		Map<String, Boolean> map = new HashMap<>();
+		map.put("User deleted successfully", true);
+		return new ResponseEntity<>(map,HttpStatus.OK);
+	}
+	
+	
+		@GetMapping("/search")
+		@PreAuthorize("hasRole('ADMIN')")
+		public ResponseEntity<List<UserDTO>> searchUserByLastName(
+				@RequestParam("lastname") String lastName){
+			List<User> userList = userService.searchUserByLastName(lastName);
+			List<UserDTO> userDTOList = userList.stream().map(this::convertToDTO).collect(Collectors.toList());
+			return new ResponseEntity<>(userDTOList, HttpStatus.OK);
+		}
+		
+		@GetMapping("/search/contain")
+		@PreAuthorize("hasRole('ADMIN')")
+		public ResponseEntity<List<UserDTO>> searchUserByLastNameContain(
+				@RequestParam("lastname") String lastName){
+			List<User> userList = userService.searchUserByLastNameContain(lastName);
+			List<UserDTO> userDTOList = userList.stream().map(this::convertToDTO).collect(Collectors.toList());
+			return new ResponseEntity<>(userDTOList, HttpStatus.OK);
+		}
 
 	private UserDTO convertToDTO(User user) {
 		UserDTO userDTO = modelMapper.map(user, UserDTO.class);

@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -139,6 +140,42 @@ public class UserService {
 		
 		userRepository.save(user);
 		
+	}
+	
+	public void updatePassword(Long id,String newPassword,String oldPassword) throws BadRequestException{
+		User user = userRepository.findById(id).orElseThrow(()->
+		new ResourceNotFoundException("user not found with id:"+id));
+		
+		if(user.getBuiltIn()) {
+			throw new ResourceNotFoundException("You dont have permission to update password");
+		}
+		
+		if(!(BCrypt.hashpw(oldPassword, user.getPassword()).equals(user.getPassword()))) {
+			throw new BadRequestException("Your password does not match");
+		}
+		
+		String encodedPassword = passwordEncoder.encode(newPassword);
+		user.setPassword(encodedPassword);
+		userRepository.save(user);
+		
+	}
+	
+	public void removeById(Long id) throws ResourceNotFoundException{
+		User user = userRepository.findById(id).orElseThrow(()->
+		new ResourceNotFoundException(String.format(USER_NOT_FOUND_MSG,id)));
+		
+		if(user.getBuiltIn()) {
+			throw new ResourceNotFoundException("You dont have permission to delete this user");
+		}
+		userRepository.deleteById(id);
+	}
+	
+	public  List<User> searchUserByLastName(String lastName){
+		return userRepository.findByLastNameStartingWith(lastName);
+	}
+	
+	public  List<User> searchUserByLastNameContain(String lastName){
+		return userRepository.findByLastNameContaining(lastName);
 	}
 	
 	public Set<Role> addRoles(Set<String> userRoles){
