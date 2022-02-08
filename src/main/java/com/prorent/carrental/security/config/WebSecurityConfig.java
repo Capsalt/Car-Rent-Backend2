@@ -57,7 +57,7 @@ private UserDetailsServiceImpl userDetailsServiceImpl;
 		.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 		.sessionManagement()
 		.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-		.authorizeHttpRequests().antMatchers("/register","/login").permitAll()
+		.authorizeHttpRequests().antMatchers("/register","/login","/car/visitors/**").permitAll()
 		.anyRequest().authenticated();
 		
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
