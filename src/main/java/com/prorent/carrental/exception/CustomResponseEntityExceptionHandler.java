@@ -67,6 +67,15 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
 		return new ResponseEntity<>(errorDetails,HttpStatus.EXPECTATION_FAILED);
 	}
 	
+	@ExceptionHandler(ReservationTimeException.class)
+	protected ResponseEntity<Object> handleReservationTimeException
+	(ReservationTimeException ex, 
+			WebRequest request) {
+		
+		ErrorMessage errorDetails=new ErrorMessage(new Date(),ex.getMessage(),request.getDescription(false));
+		return new ResponseEntity<>(errorDetails,HttpStatus.BAD_REQUEST);
+	}
+	
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
