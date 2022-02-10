@@ -64,9 +64,19 @@ private UserDetailsServiceImpl userDetailsServiceImpl;
 		
 	}
 	
+	private static final String[] AUTH_LIST = {
+			"/v3/api-docs/**",
+			"/configuration/ui", 
+			"/swagger-resources", 
+			"/configuration/security", 
+			"/swagger-ui/**", 
+			"/webjars/**",
+			"/swagger/**"
+	};
+	
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		super.configure(web);
+		web.ignoring().antMatchers(AUTH_LIST);
 	}
 
 }
