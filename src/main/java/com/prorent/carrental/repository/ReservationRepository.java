@@ -9,12 +9,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.prorent.carrental.domain.Car;
 import com.prorent.carrental.domain.Reservation;
+import com.prorent.carrental.domain.User;
 import com.prorent.carrental.domain.enumeration.ReservationStatus;
 import com.prorent.carrental.service.dto.ReservationDTO;
 
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
+	
+	boolean existsByCarId(Car car);
+	boolean existsByUserId(User user);
 	
 	@Query("SELECT new com.prorent.carrental.service.dto.ReservationDTO (r) FROM Reservation r")
 	List<ReservationDTO> getAllReservations();

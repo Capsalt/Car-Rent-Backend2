@@ -16,6 +16,7 @@ import com.prorent.carrental.exception.BadRequestException;
 import com.prorent.carrental.exception.ResourceNotFoundException;
 import com.prorent.carrental.repository.CarRepository;
 import com.prorent.carrental.repository.ImageFileRepository;
+import com.prorent.carrental.repository.ReservationRepository;
 import com.prorent.carrental.service.dto.CarDTO;
 
 @Transactional
@@ -27,6 +28,9 @@ public class CarService {
 	
 	@Autowired
 	CarRepository carRepository;
+	
+	@Autowired
+	ReservationRepository reservationRepository;
 	
 	public void addCar(Car car, String imageId) throws BadRequestException{
 		
@@ -78,6 +82,12 @@ public class CarService {
 		
 		if(car.getBuiltIn()) {
 			throw new BadRequestException("Yo dont have permission to update this car:"+id);
+		}
+		
+		boolean exists = reservationRepository.existsByCarId(car);
+		
+		if(exists) {
+			throw new BadRequestException("Car is used by a reservation");
 		}
 		
 		carRepository.deleteById(id);
